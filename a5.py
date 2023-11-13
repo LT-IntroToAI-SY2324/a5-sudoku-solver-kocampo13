@@ -1,4 +1,5 @@
-import copy  # to make a deepcopy of the board
+import copy
+from locale import currency  # to make a deepcopy of the board
 from typing import List, Any, Tuple
 
 # import Stack and Queue classes for BFS/DFS
@@ -112,7 +113,7 @@ class Board:
 
         for i in range(self.size):
             for j in range(self.size):
-                if isinstance(self.rows[i][j], list) and len(self.rows[i[j]) < mini:
+                if isinstance(self.rows[i][j], list) and len(self.rows[i][j]) < mini:
                     mini = len(self.rows[i][j])
                     row = i
                     col = j
@@ -174,7 +175,19 @@ def DFS(state: Board) -> Board:
     Returns:
         either None in the case of invalid input or a solved board
     """
-    pass
+    the_stack = Stack()
+    the_stack.push(state)
+
+    while not the_stack.is_empty():
+        curr = the_stack.pop()
+        if curr.goal_test():
+            return curr
+        elif not curr.failure_test():
+            row, col = curr.find_most_constrained_cell()
+            for sel in curr.rows[row][col]:
+                cpy = copy.deepcopy(curr)
+                cpy.update(row, col, sel)
+                the_stack.push(cpy)
 
 
 def BFS(state: Board) -> Board:
@@ -275,7 +288,7 @@ if __name__ == "__main__":
         (8, 7, 5),
     ]
     # #Create a sudoku board.
-    # b = Board()
+    b = Board()
     # #Place the 28 assignments in first_moves on the board.
     for trip in first_moves:
         b.rows[trip[0]][trip[1]] = trip[2]
@@ -310,11 +323,11 @@ if __name__ == "__main__":
 
     # ##Now, let's write some quick tests to check update!
     # #Create a sudoku board.
-    # g = Board()
+    g = Board()
     # #Place the 28 assignments in first_moves on the board.
-    # for trip in first_moves:
-    #     g.update(trip[0],trip[1],trip[2])
-    # g.print_pretty()
+    for trip in first_moves:
+        g.update(trip[0],trip[1],trip[2])
+    g.print_pretty()
     # #From the above print statement, you can see which numbers
     # #  have been assigned to the board, and then create test
     # #  cases by looking at the board and listing what values are
